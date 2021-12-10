@@ -17,6 +17,9 @@ from utils import InstanceIndex, Utils, Action
 @click.option("-e", "--export", required=False,
               help="Prints the ENVs of the desired OpenStack project")
 def main(update, list, export):
+    """
+    SSH helper for managing multiple OpenStack projects. Run without any arguments to get fancy prompts.
+    """
     if update:
         updateCachePrompt(InstanceIndex.loadOsProjectsListOnly())
 
