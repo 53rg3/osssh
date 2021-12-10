@@ -1,9 +1,19 @@
 # How to install
 
 1. Clone the repo
+
 2. Configure `config.yml` and set up `pathToOpenStackProjectsYamlFile` to the file on your system.
-3. Create an `alias` or put a link `osssh.py` into `$PATH`
-4. Execute `python3 osssh.py --update` to load the list of instances into the cache
+
+3. Install via `pip3 install .`
+
+4. Put a link to `osssh.py` into `$PATH` (maybe you'll need a `chmod +x` as well), e.g. 
+
+   ```
+   chmod +x /home/james/Desktop/osssh/osssh.py
+   sudo ln -s /home/james/Desktop/osssh/osssh.py /usr/local/bin/osssh
+   ```
+
+5. Execute `osssh --update` to load the list of instances into the cache
 
 
 

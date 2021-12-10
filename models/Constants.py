@@ -1,7 +1,9 @@
 from prompt_toolkit.styles import Style
 
-configFileName = "config.yml"
-cacheDir = ".cache"
+from utils import Utils
+
+configFile = f"{Utils.getProjectRoot()}/config.yml"
+cacheDir = f"{Utils.getProjectRoot()}/.cache"
 
 promptStyle = Style.from_dict({
     "yellow": "ansiyellow"

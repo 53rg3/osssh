@@ -45,7 +45,7 @@ def loadOsProjectsListOnly():
 
 
 def loadFromConfig():
-    config = YamlLoader.fromFile(Path(Constants.configFileName))
+    config = YamlLoader.fromFile(Constants.configFile)
     osProjectsFilePath = getOsProjectsFilePath(config)
     return YamlLoader.fromFile(Path(osProjectsFilePath))
 

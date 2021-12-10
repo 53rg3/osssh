@@ -1,4 +1,7 @@
+import os
+
 import click
+from pathlib import Path
 
 
 def exitWithError(errorMessage: str):
@@ -33,3 +36,7 @@ def getOptionalKeyFromDict(key: str, dictionary: dict):
         return dictionary[key]
     except (Exception, ):
         return None
+
+
+def getProjectRoot():
+    return str(Path(os.path.dirname(os.path.realpath(__file__))).parent.absolute())

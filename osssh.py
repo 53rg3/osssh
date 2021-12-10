@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import click
 
 from models import Mode
