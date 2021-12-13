@@ -84,6 +84,8 @@ Example:
 
   - When providing parameters then it might make sense just to use them as overrides. I.e. no prompts will be provided if requirements are fulfilled and if an argument conflicts with something from the `os_projects.yml` then it will be just overridden by the argument.
 
+- [ ] Add availibility info to selection. ACTIVE, SHUTOFF, etc. 
+
 - [ ] Allow to execute remote commands
 
   Without automation capabilities this wouldn't make sense, but if you could pass values as arguments then it would be sense to be able to execute a command (or Bash script file) on multiple machines at once.
