@@ -1,3 +1,4 @@
+import json
 import os
 import re
 from pathlib import Path
@@ -100,35 +101,37 @@ def parseProjectList(osProjectList: list, shouldAddInstanceId: bool) -> dict:
                 uniqueIds.add(instance[Keys.ID])
 
             if shouldAddInstanceId:
-                key = formatTemplate.format(osProject.id, instance[Keys.Name], instance[Keys.Networks], instance[Keys.Flavor],
+                key = formatTemplate.format(osProject.id, instance[Keys.Name], getNetworks(instance), instance[Keys.Status], instance[Keys.Flavor],
                                             instance[Keys.ID])
-                index[key] = "NOT USED - Only used for --export"
+                index[key] = "NOT USED - Only used for --list"
             else:
-                for ip in extractIPs(instance[Keys.Networks]):
-                    key = formatTemplate.format(osProject.id, instance[Keys.Name], ip, instance[Keys.Flavor],
+                for ip in extractIPs(getNetworks(instance)):
+                    key = formatTemplate.format(osProject.id, instance[Keys.Name], ip, instance[Keys.Status], instance[Keys.Flavor],
                                                 instance[Keys.ID])
                     index[key] = SshData(ip, osProject)
 
     return index
 
 
-def generateFormatTemplate(osProjectList: list, shouldAddInstanceId: bool):
+def generateFormatTemplate(osProjectList: list, shouldAddInstanceId: bool) -> str:
     lengths = {
         "osProjectId": 0,
         "instanceName": 0,
         "ip": 0,
+        "status": 0,
         "flavor": 0,
         "instanceId": 0
     }
     for osProject in osProjectList:
         for instance in osProject.instanceList:
-            for ip in extractIPs(instance[Keys.Networks]):
+            for ip in extractIPs(getNetworks(instance)):
                 lengths["osProjectId"] = updateMaxLength(lengths["osProjectId"], osProject.id)
                 lengths["instanceName"] = updateMaxLength(lengths["instanceName"], instance[Keys.Name])
+                lengths["status"] = updateMaxLength(lengths["status"], instance[Keys.Status])
                 lengths["flavor"] = updateMaxLength(lengths["flavor"], instance[Keys.Flavor])
                 lengths["instanceId"] = updateMaxLength(lengths["instanceId"], instance[Keys.ID])
                 if shouldAddInstanceId:
-                    lengths["ip"] = updateMaxLength(lengths["ip"], instance[Keys.Networks])
+                    lengths["ip"] = updateMaxLength(lengths["ip"], getNetworks(instance))
                 else:
                     lengths["ip"] = updateMaxLength(lengths["ip"], ip)
 
@@ -136,6 +139,7 @@ def generateFormatTemplate(osProjectList: list, shouldAddInstanceId: bool):
                      "{:<" + str(lengths['osProjectId']) + "} " + \
                      "| {:<" + str(lengths['instanceName']) + "} " + \
                      "| {:<" + str(lengths['ip']) + "} " + \
+                     "| {:<" + str(lengths['status']) + "} " + \
                      "| {:<" + str(lengths['flavor']) + "} "
     if shouldAddInstanceId:
         formatTemplate += "| {:<" + str(lengths['instanceId']) + "}"
@@ -143,12 +147,19 @@ def generateFormatTemplate(osProjectList: list, shouldAddInstanceId: bool):
     return formatTemplate
 
 
-def updateMaxLength(maxLength: int, candidateString: str):
+def updateMaxLength(maxLength: int, candidateString: str) -> int:
     if maxLength < len(candidateString):
         return len(candidateString)
     else:
         return maxLength
 
 
-def extractIPs(networks: str):
+def extractIPs(networks: str) -> list:
     return re.findall(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', networks)
+
+
+def getNetworks(instance: dict) -> str:
+    networks = instance[Keys.Networks]
+    if not isinstance(networks, str):
+        networks = json.dumps(networks)
+    return networks
