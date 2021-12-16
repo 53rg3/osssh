@@ -108,7 +108,7 @@ def parseProjectList(osProjectList: list, shouldAddInstanceId: bool) -> dict:
                 for ip in extractIPs(getNetworks(instance)):
                     key = formatTemplate.format(osProject.id, instance[Keys.Name], ip, instance[Keys.Status], instance[Keys.Flavor],
                                                 instance[Keys.ID])
-                    index[key] = SshData(ip, osProject)
+                    index[key] = SshData(ip, instance[Keys.Name], osProject)
 
     return index
 
