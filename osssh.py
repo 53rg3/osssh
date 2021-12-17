@@ -16,7 +16,9 @@ from utils import InstanceIndex, Utils, Action
               help="Prints list of all service in the cache")
 @click.option("-e", "--export", required=False,
               help="Prints the ENVs of the desired OpenStack project")
-def main(update, list, export):
+@click.option("-t", "--override-title", is_flag=True,
+              help="Will override the terminal title with OpenStack data, might cause problems selecting text. Therefore only as opt-in.")
+def main(update, list, export, override_title):
     """
     SSH helper for managing multiple OpenStack projects. Run without any arguments to get fancy prompts.
     """
@@ -38,7 +40,7 @@ def main(update, list, export):
 
     # Execute
     if mode == Mode.ssh:
-        Action.ssh(sshData)
+        Action.ssh(sshData, override_title)
     elif mode == Mode.download:
         downloadPrompt(sshData)
     elif mode == Mode.upload:

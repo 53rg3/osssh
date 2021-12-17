@@ -10,7 +10,7 @@ from utils.Shell import Shell
 keepRunning = True
 
 
-def ssh(sshData: SshData):
+def ssh(sshData: SshData, override_title: bool):
     sh = Shell(os.getcwd())
 
     cmd = f"""
@@ -19,8 +19,10 @@ def ssh(sshData: SshData):
         "ssh -t {sshData.targetUser}@{sshData.targetIp}"
     """.strip()
 
-    timer = Timer(0.1, overwriteTerminalTitle, args=[sshData.hostName])
-    timer.start()
+    if override_title:
+        timer = Timer(0.1, overwriteTerminalTitle, args=[sshData.hostName, sshData.projectName])
+        timer.start()
+
     Utils.printInfo(f"> Running SSH with: \n{cmd}\n")
     sh.run(cmd, env=os.environ)
 
@@ -50,12 +52,12 @@ def scp(source: str, target: str, sshData: SshData):
                             f"Command `{cmd}` produced error code: {sh.getExitCode()}")
 
 
-def overwriteTerminalTitle(hostName: str):
+def overwriteTerminalTitle(hostName: str, projectName: str):
     global keepRunning
     try:
         while keepRunning:
             time.sleep(0.01)
-            sys.stdout.write(f'\33]0;{hostName}\a')
+            sys.stdout.write(f'\33]0;{hostName} ({projectName})\a')
             sys.stdout.flush()
     except (Exception,):
         pass
